@@ -5,7 +5,6 @@ using System.Drawing;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
-//using DevTools;
 
 namespace LxfHandler
 {
@@ -18,7 +17,6 @@ namespace LxfHandler
         {
             Bitmap image = null;
 
-            // var stream2 = new LoggingStreamWrapper(SelectedItemStream, new FileLogger(@"C:\Users\Henrik\Dropbox\LEGO\Models\_temps\StreamLog.txt"));
             using (ZipArchive archive = new ZipArchive(_source_stream)) // SelectedItemStream stream
             {
                 ZipArchiveEntry lxfml_file = archive.GetEntry("IMAGE100.PNG");
@@ -56,7 +54,6 @@ namespace LxfHandler
             }
             catch (Exception e)
             {
-                //var logger = new FileLogger(@"C:\Users\Henrik\Dropbox\LEGO\Models\_temps\ErrorLog.txt");
                 //logger.LogError(e);
                 return WinError.E_FAIL;
             }
