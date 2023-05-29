@@ -133,12 +133,12 @@ namespace UnitTests.Installer
             Assert.That(result, Is.Not.Null);
         }
 
-        [Test, ExpectedException]
+        [Test]
         public void WillThrowExceptionWhenKeyIsNull()
         {
             var reg_key = Registry.CurrentUser;
 
-            var result = new RegKeyItem(reg_key.OpenSubKey(_test_path)); // Path should not exist now
+            Assert.Throws<Exception>(() => new RegKeyItem(reg_key.OpenSubKey(_test_path))); // Path should not exist now
         }
 
         [Test]

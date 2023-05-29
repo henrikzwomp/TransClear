@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Installer;
 using Microsoft.Win32;
-using Rhino.Mocks;
+using Moq;
 
 namespace UnitTests.Installer
 {
@@ -32,117 +32,117 @@ namespace UnitTests.Installer
         {
             var data = new TestShellExtension();
 
-            var version_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var version_key = new Mock<IRegKeyItem>();
 
-            var inproc32_key = MockRepository.GenerateMock<IRegKeyItem>();
-            inproc32_key.Stub(x => x.CreateOrOpenSubKey(Arg<string>.Is.Equal(data.AssemblyVersion))).Return(version_key);
+            var inproc32_key = new Mock<IRegKeyItem>();
+            inproc32_key.Setup(x => x.CreateOrOpenSubKey(data.AssemblyVersion)).Returns(version_key.Object);
 
-            var server_key = MockRepository.GenerateMock<IRegKeyItem>();
-            server_key.Stub(x => x.CreateOrOpenSubKey(Arg<string>.Is.Equal("InprocServer32"))).Return(inproc32_key);
+            var server_key = new Mock<IRegKeyItem>();
+            server_key.Setup(x => x.CreateOrOpenSubKey("InprocServer32")).Returns(inproc32_key.Object);
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.CreateOrOpenSubKey(Arg<string>.Is.Equal(data.CLSID))).Return(server_key);
+            var classes_key = new Mock<IRegKeyItem>();
+            classes_key.Setup(x => x.CreateOrOpenSubKey(data.CLSID)).Returns(server_key.Object);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesKey()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.InstallExtension();
 
-            classes_key.AssertWasCalled(x => x.CreateOrOpenSubKey(Arg<string>.Is.Same(data.CLSID)));
-            server_key.AssertWasCalled(x => x.CreateOrOpenSubKey(Arg<string>.Is.Same("InprocServer32")));
-            inproc32_key.AssertWasCalled(x => x.CreateOrOpenSubKey(Arg<string>.Is.Same(data.AssemblyVersion)));
+            classes_key.Verify(x => x.CreateOrOpenSubKey(data.CLSID));
+            server_key.Verify(x => x.CreateOrOpenSubKey("InprocServer32"));
+            inproc32_key.Verify(x => x.CreateOrOpenSubKey(data.AssemblyVersion));
 
-            server_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Null, Arg<string>.Is.Same(data.DisplayName)));
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Null, Arg<string>.Is.Same("mscoree.dll")));
+            server_key.Verify(x => x.SetValue(null, data.DisplayName));
+            inproc32_key.Verify(x => x.SetValue(null, "mscoree.dll"));
 
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("Assembly"), Arg<string>.Is.Equal(data.AssemblyFullName)));
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("Class"), Arg<string>.Is.Same(data.ClassName)));
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("RuntimeVersion"), Arg<string>.Is.Same(data.RuntimeVersion)));
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("ThreadingModel"), Arg<string>.Is.Same("Both")));
-            inproc32_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("CodeBase"), Arg<string>.Is.Same(data.CodeBaseValue)));
+            inproc32_key.Verify(x => x.SetValue("Assembly", data.AssemblyFullName));
+            inproc32_key.Verify(x => x.SetValue("Class", data.ClassName));
+            inproc32_key.Verify(x => x.SetValue("RuntimeVersion", data.RuntimeVersion));
+            inproc32_key.Verify(x => x.SetValue("ThreadingModel", "Both"));
+            inproc32_key.Verify(x => x.SetValue("CodeBase", data.CodeBaseValue));
 
-            version_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("Assembly"), Arg<string>.Is.Same(data.AssemblyFullName)));
-            version_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("Class"), Arg<string>.Is.Same(data.ClassName)));
-            version_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("RuntimeVersion"), Arg<string>.Is.Same(data.RuntimeVersion)));
-            version_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Same("CodeBase"), Arg<string>.Is.Same(data.CodeBaseValue)));
+            version_key.Verify(x => x.SetValue("Assembly", data.AssemblyFullName));
+            version_key.Verify(x => x.SetValue("Class", data.ClassName));
+            version_key.Verify(x => x.SetValue("RuntimeVersion", data.RuntimeVersion));
+            version_key.Verify(x => x.SetValue("CodeBase", data.CodeBaseValue));
         }
 
         [Test]
         public void CanRegisterThumbnailHandlerForLxfFiles()
         {
-            var server_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var server_key = new Mock<IRegKeyItem>();
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.CreateOrOpenSubKey(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))))
-                .Return(server_key);
+            var classes_key = new Mock<IRegKeyItem>();
+            classes_key.Setup(x => x.CreateOrOpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")))
+                .Returns(server_key.Object);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesRoot()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesRoot()).Returns(classes_key.Object);
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.RegisterThumbnailHandlerForLxfFiles();
 
-            server_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Null, Arg<string>.Is.Equal(data.CLSID)));
+            server_key.Verify(x => x.SetValue(null, data.CLSID));
         }
 
         [Test]
         public void CanApproveExtension()
         {
-            var approved_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var approved_key = new Mock<IRegKeyItem>();
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenApprovedShellExtensionsKey()).Return(approved_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenApprovedShellExtensionsKey()).Returns(approved_key.Object);
 
             var data = new TestShellExtension(); 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.ApproveExtension();
 
-            approved_key.AssertWasCalled(x => x.SetValue(Arg<string>.Is.Equal(data.CLSID), Arg<string>.Is.Equal(data.DisplayName)));
+            approved_key.Verify(x => x.SetValue(data.CLSID, data.DisplayName));
         }
 
         [Test]
         public void CanUnapproveExtension()
         {
-            var approved_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var approved_key = new Mock<IRegKeyItem>();
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenApprovedShellExtensionsKey()).Return(approved_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenApprovedShellExtensionsKey()).Returns(approved_key.Object);
 
             var data = new TestShellExtension(); 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UnapproveExtension();
 
-            approved_key.AssertWasCalled(x => x.DeleteValue(Arg<string>.Is.Equal(data.CLSID)));
+            approved_key.Verify(x => x.DeleteValue(data.CLSID));
         }
 
         [Test]
         public void CanUnregisterThumbnailHandlerForLxfFiles()
         {
-            var association_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var association_key = new Mock<IRegKeyItem>();
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))))
-                .Return(association_key);
+            var classes_key = new Mock<IRegKeyItem>();
+            classes_key.Setup(x => x.OpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")))
+                .Returns(association_key.Object);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesRoot()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesRoot()).Returns(classes_key.Object);
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UnregisterServerAssociations();
 
-            classes_key.AssertWasCalled(x => x.DeleteSubKeyTree(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))));
+            classes_key.Verify(x => x.DeleteSubKeyTree(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")));
         }
 
         [Test]
@@ -152,19 +152,19 @@ namespace UnitTests.Installer
 
             IList<string> sub_keys = new List<string>() { "Something", "Wrong", data.CLSID, "Blipp" };
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.GetSubKeyNames())
-                .Return(sub_keys);
+            var classes_key = new Mock<IRegKeyItem>();
+            classes_key.Setup(x => x.GetSubKeyNames())
+                .Returns(sub_keys);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesKey()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UninstallExtension();
 
-            classes_key.AssertWasCalled(x => x.DeleteSubKeyTree(data.CLSID));
+            classes_key.Verify(x => x.DeleteSubKeyTree(data.CLSID));
         }
         
         [Test]
@@ -174,91 +174,91 @@ namespace UnitTests.Installer
 
             IList<string> sub_keys = new List<string>() { "Something", "Wrong", "Blipp" };
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.GetSubKeyNames())
-                .Return(sub_keys);
+            var classes_key = new Mock<IRegKeyItem>();
+            classes_key.Setup(x => x.GetSubKeyNames())
+                .Returns(sub_keys);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesKey()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UninstallExtension();
 
-            classes_key.AssertWasNotCalled(x => x.DeleteSubKeyTree(data.CLSID));
+            classes_key.Verify(x => x.DeleteSubKeyTree(data.CLSID), Times.Never());
         }
 
         [Test]
         public void WillNotBreakIfUnregisteringMissingInstallation()
         {
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            classes_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))))
-                .Return(null);
+            var classes_key = new Mock<IRegKeyItem>();
+            //classes_key.Setup(x => x.OpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))).Returns(null);
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenClassesRoot()).Return(classes_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenClassesRoot()).Returns(classes_key.Object);
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UnregisterServerAssociations();
 
-            classes_key.AssertWasNotCalled(x => x.DeleteSubKeyTree(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))));
+            classes_key.Verify(x => x.DeleteSubKeyTree(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))
+                , Times.Never());
         }
 
         [Test]
         public void WillNotBreakIfUnapprovingMissingInstallation()
         {
-            var approved_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var approved_key = new Mock<IRegKeyItem>();
 
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenApprovedShellExtensionsKey()).Return(approved_key);
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenApprovedShellExtensionsKey()).Returns(approved_key.Object);
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             server_handler.UnapproveExtension();
 
-            approved_key.AssertWasCalled(x => x.DeleteValue(Arg<string>.Is.Equal(data.CLSID)));
+            approved_key.Verify(x => x.DeleteValue(data.CLSID));
         }
         
         [Test]
         public void CanDetermineIfInstalled()
         {
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
+            var reg_access = new Mock<IRegistryAccess>();
             var data = new TestShellExtension();
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
-            reg_access.Stub(x => x.OpenClassesKey()).Return(classes_key);
+            var classes_key = new Mock<IRegKeyItem>();
+            reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
             Assert.That(server_handler.IsInstalled(), Is.EqualTo(false));
 
-            var version_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var version_key = new Mock<IRegKeyItem>();
 
-            var inproc32_key = MockRepository.GenerateMock<IRegKeyItem>();
-            inproc32_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal(data.AssemblyVersion))).Return(version_key);
+            var inproc32_key = new Mock<IRegKeyItem>();
+            inproc32_key.Setup(x => x.OpenSubKey(data.AssemblyVersion)).Returns(version_key.Object);
 
-            var server_key = MockRepository.GenerateMock<IRegKeyItem>();
-            server_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal("InprocServer32"))).Return(inproc32_key);
+            var server_key = new Mock<IRegKeyItem>();
+            server_key.Setup(x => x.OpenSubKey("InprocServer32")).Returns(inproc32_key.Object);
 
-            classes_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal(data.CLSID))).Return(server_key);
+            classes_key.Setup(x => x.OpenSubKey(data.CLSID)).Returns(server_key.Object);
 
-            server_key.Stub(x => x.GetValue(Arg<string>.Is.Null)).Return(data.DisplayName);
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Null)).Return("mscoree.dll");
+            server_key.Setup(x => x.GetValue(null)).Returns(data.DisplayName);
+            inproc32_key.Setup(x => x.GetValue(null)).Returns("mscoree.dll");
 
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Same("Assembly"))).Return(data.AssemblyFullName);
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Same("Class"))).Return(data.ClassName);
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Same("RuntimeVersion"))).Return(data.RuntimeVersion);
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Same("ThreadingModel"))).Return("Both");
-            inproc32_key.Stub(x => x.GetValue(Arg<string>.Is.Same("CodeBase"))).Return(data.CodeBaseValue);
+            inproc32_key.Setup(x => x.GetValue("Assembly")).Returns(data.AssemblyFullName);
+            inproc32_key.Setup(x => x.GetValue("Class")).Returns(data.ClassName);
+            inproc32_key.Setup(x => x.GetValue("RuntimeVersion")).Returns(data.RuntimeVersion);
+            inproc32_key.Setup(x => x.GetValue("ThreadingModel")).Returns("Both");
+            inproc32_key.Setup(x => x.GetValue("CodeBase")).Returns(data.CodeBaseValue);
 
-            version_key.Stub(x => x.GetValue(Arg<string>.Is.Same("Assembly"))).Return(data.AssemblyFullName);
-            version_key.Stub(x => x.GetValue(Arg<string>.Is.Same("Class"))).Return(data.ClassName);
-            version_key.Stub(x => x.GetValue(Arg<string>.Is.Same("RuntimeVersion"))).Return(data.RuntimeVersion);
-            version_key.Stub(x => x.GetValue(Arg<string>.Is.Same("CodeBase"))).Return(data.CodeBaseValue);
+            version_key.Setup(x => x.GetValue("Assembly")).Returns(data.AssemblyFullName);
+            version_key.Setup(x => x.GetValue("Class")).Returns(data.ClassName);
+            version_key.Setup(x => x.GetValue("RuntimeVersion")).Returns(data.RuntimeVersion);
+            version_key.Setup(x => x.GetValue("CodeBase")).Returns(data.CodeBaseValue);
 
             Assert.That(server_handler.IsInstalled(), Is.EqualTo(true));
         }
@@ -266,23 +266,23 @@ namespace UnitTests.Installer
         [Test]
         public void CanDetermineIfRegistered()
         {
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
+            var reg_access = new Mock<IRegistryAccess>();
             var data = new TestShellExtension();
 
-            var classes_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var classes_key = new Mock<IRegKeyItem>();
 
-            reg_access.Stub(x => x.OpenClassesRoot()).Return(classes_key);
+            reg_access.Setup(x => x.OpenClassesRoot()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             Assert.That(server_handler.IsRegistered(), Is.EqualTo(false));
 
-            var server_key = MockRepository.GenerateMock<IRegKeyItem>();
+            var server_key = new Mock<IRegKeyItem>();
 
-            classes_key.Stub(x => x.OpenSubKey(Arg<string>.Is.Equal(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))))
-                .Return(server_key);
+            classes_key.Setup(x => x.OpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")))
+                .Returns(server_key.Object);
 
-            server_key.Stub(x => x.GetValue(Arg<string>.Is.Null)).Return(data.CLSID);
+            server_key.Setup(x => x.GetValue(null)).Returns(data.CLSID);
 
             Assert.That(server_handler.IsRegistered(), Is.EqualTo(true));
         }
@@ -291,17 +291,18 @@ namespace UnitTests.Installer
         public void CanDetermineIfApproved()
         {
             var data = new TestShellExtension();
-            var approved_key = MockRepository.GenerateMock<IRegKeyItem>();
-            var reg_access = MockRepository.GenerateMock<IRegistryAccess>();
-            reg_access.Stub(x => x.OpenApprovedShellExtensionsKey()).Return(approved_key);
+            var approved_key = new Mock<IRegKeyItem>();
+            var reg_access = new Mock<IRegistryAccess>();
+            reg_access.Setup(x => x.OpenApprovedShellExtensionsKey()).Returns(approved_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access);
+            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
 
             Assert.That(server_handler.IsApproved(), Is.EqualTo(false));
 
-            approved_key.Stub(x => x.GetValue(Arg<string>.Is.Equal(data.CLSID))).Return(data.DisplayName);
+            approved_key.Setup(x => x.GetValue(data.CLSID)).Returns(data.DisplayName);
 
             Assert.That(server_handler.IsApproved(), Is.EqualTo(true));
         }
     }
+
 }

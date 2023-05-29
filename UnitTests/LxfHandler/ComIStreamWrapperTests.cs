@@ -89,7 +89,7 @@ namespace UnitTests.LxfHandler
             Assert.That(lxfml_file, Is.Not.Null);
         }
 
-        [Test, ExpectedException]
+        [Test]
         public void CantReadBeyondEndOfStream()
         {
             var istream_object = new IStreamImplementation(@"TestFiles\TestTextData.txt");
@@ -98,7 +98,7 @@ namespace UnitTests.LxfHandler
             byte[] result = new byte[10];
 
             wrapper.Seek(-5, SeekOrigin.End);
-            wrapper.Read(result, 0, 10);
+            Assert.Throws<ArgumentException>(() => wrapper.Read(result, 0, 10));
         }
 
         [Test]
@@ -124,7 +124,7 @@ namespace UnitTests.LxfHandler
             }
         }
 
-        [Test, Explicit, ExpectedException]
+        [Test, Explicit] // ExpectedException
         public void JustCheckingBehaivor()
         {
             var stream = File.OpenRead(@"TestFiles\TestTextData.txt");
