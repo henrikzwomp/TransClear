@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 
-namespace LxfHandler
+namespace TransClear2
 {
     public class ImageDownSizer // Yeah, the name is a little weird.
     {

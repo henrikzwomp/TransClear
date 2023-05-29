@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Inst
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{15DFB34A-F7ED-468D-9C8B-D66D5FDFAD51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LxfHandler", "LxfHandler\LxfHandler.csproj", "{03541362-3B50-4872-9A39-1D89FB1E3C80}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransClear2", "LxfHandler\TransClear2.csproj", "{03541362-3B50-4872-9A39-1D89FB1E3C80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DevTools", "DevTools\DevTools.csproj", "{2EE19961-FEEC-473A-BEB6-1096DDD3AE4B}"
 EndProject

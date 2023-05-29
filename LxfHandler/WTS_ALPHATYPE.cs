@@ -1,5 +1,5 @@
 ﻿
-namespace LxfHandler
+namespace TransClear2
 {
     /// <summary>
     /// Alpha channel type information.

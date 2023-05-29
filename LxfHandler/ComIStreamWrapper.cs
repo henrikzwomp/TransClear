@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
-namespace LxfHandler
+namespace TransClear2
 {
     public class ComIStreamWrapper : Stream
     {

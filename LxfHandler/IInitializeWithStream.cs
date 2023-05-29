@@ -3,7 +3,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 
-namespace LxfHandler
+namespace TransClear2
 {
     /// <summary>
     /// Exposes a method that initializes a handler, such as a property handler, thumbnail handler, or preview handler, with a stream.

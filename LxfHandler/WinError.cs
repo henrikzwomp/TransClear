@@ -1,5 +1,5 @@
 ﻿
-namespace LxfHandler
+namespace TransClear2
 {
     public static class WinError
     {

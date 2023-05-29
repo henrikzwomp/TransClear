@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
-using LxfHandler;
+using TransClear2;
 using System.IO.Compression;
 using System.IO;
 
@@ -13,7 +13,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Drawing;
 
 
-namespace UnitTests.LxfHandler
+namespace UnitTests.TransClear2
 {
     [TestFixture]
     public class ComIStreamWrapperTests

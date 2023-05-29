@@ -100,9 +100,9 @@
       <Project>{639d6583-a1d6-4361-81c3-91863def6d59}</Project>
       <Name>Installer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LxfHandler\LxfHandler.csproj">
+    <ProjectReference Include="..\LxfHandler\TransClear2.csproj">
       <Project>{03541362-3b50-4872-9a39-1d89fb1e3c80}</Project>
-      <Name>LxfHandler</Name>
+      <Name>TransClear2</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

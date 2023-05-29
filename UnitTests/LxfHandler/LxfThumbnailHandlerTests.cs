@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using LxfHandler;
+using TransClear2;
 
 //using System.Runtime.InteropServices.ComTypes; // IStream
 //using System.IO;
 using System.Drawing;
 
-namespace UnitTests.LxfHandler
+namespace UnitTests.TransClear2
 {
     [TestFixture]
     public class LxfThumbnailHandlerTests

@@ -6,7 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 
-namespace LxfHandler
+namespace TransClear2
 {
     [ComVisible(true)]
     public class LxfThumbnailHandler : IInitializeWithStream, IThumbnailProvider

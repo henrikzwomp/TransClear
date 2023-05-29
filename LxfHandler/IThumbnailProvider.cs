@@ -2,7 +2,7 @@
 
 using System.Runtime.InteropServices;
 
-namespace LxfHandler
+namespace TransClear2
 {
     [ComImport]
     [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
