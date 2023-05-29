@@ -71,12 +71,12 @@
     <Compile Include="Installer\ShellExtensionHandlerTests.cs" />
     <Compile Include="Installer\ShellExtensionLoaderTests.cs" />
     <Compile Include="IStreamImplementation.cs" />
-    <Compile Include="LxfHandler\ComIStreamWrapperTests.cs" />
-    <Compile Include="LxfHandler\ImageDownSizerTests.cs" />
-    <Compile Include="LxfHandler\LxfThumbnailHandlerTests.cs" />
     <Compile Include="Meta\IStreamImplementationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpyStreamWrapper.cs" />
+    <Compile Include="TransClear2\ComIStreamWrapperTests.cs" />
+    <Compile Include="TransClear2\ImageDownSizerTests.cs" />
+    <Compile Include="TransClear2\LxfThumbnailHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -100,7 +100,7 @@
       <Project>{639d6583-a1d6-4361-81c3-91863def6d59}</Project>
       <Name>Installer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\LxfHandler\TransClear2.csproj">
+    <ProjectReference Include="..\TransClear2\TransClear2.csproj">
       <Project>{03541362-3b50-4872-9a39-1d89fb1e3c80}</Project>
       <Name>TransClear2</Name>
     </ProjectReference>
