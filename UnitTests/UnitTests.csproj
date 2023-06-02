@@ -76,11 +76,15 @@
     <Compile Include="SpyStreamWrapper.cs" />
     <Compile Include="TransClear2\ComIStreamWrapperTests.cs" />
     <Compile Include="TransClear2\ImageDownSizerTests.cs" />
+    <Compile Include="TransClear2\IoThumbnailHandlerTests .cs" />
     <Compile Include="TransClear2\LxfThumbnailHandlerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="TestFiles\TestFile.io">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="TestFiles\TestGroup01_DidntWork.lxf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
