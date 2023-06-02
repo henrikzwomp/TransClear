@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Drawing;
 using System.IO;
-//using System.IO.Compression;
 using System.Runtime.InteropServices;
 using ICSharpCode.SharpZipLib;
 using ICSharpCode.SharpZipLib.Zip;
+//using DevTools;
 
 namespace TransClear2
 {
@@ -24,6 +24,10 @@ namespace TransClear2
                 zip_file.Password = "soho0909";
 
                 var png_file_entry = zip_file.GetEntry("thumbnail.png");
+
+                if (png_file_entry == null) // ToDo write unit test for this.
+                    return null;
+
                 var png_file_stream = zip_file.GetInputStream(png_file_entry);
 
                 image = new Bitmap(png_file_stream);
@@ -52,6 +56,8 @@ namespace TransClear2
             pdwAlpha = WTS_ALPHATYPE.WTSAT_UNKNOWN;
             Bitmap thumbnailImage;
 
+            //var logger = new FileLogger("D:\\TC2.txt");
+
             try
             {
                 thumbnailImage = GetThumbnailImage(cx);
@@ -64,8 +70,7 @@ namespace TransClear2
 
             if (thumbnailImage == null)
             {
-                //  DebugLog a warning return failure.
-                //Log("The internal GetThumbnail function failed to return a valid thumbnail.");
+                //logger.LogError("The internal GetThumbnail function failed to return a valid thumbnail.");
                 return WinError.E_FAIL;
             }
 
