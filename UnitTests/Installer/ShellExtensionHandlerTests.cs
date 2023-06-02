@@ -47,9 +47,9 @@ namespace UnitTests.Installer
             var reg_access = new Mock<IRegistryAccess>();
             reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.InstallExtension();
+            server_handler.InstallExtension(data);
 
             classes_key.Verify(x => x.CreateOrOpenSubKey(data.CLSID));
             server_key.Verify(x => x.CreateOrOpenSubKey("InprocServer32"));
@@ -84,9 +84,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.RegisterThumbnailHandlerForLxfFiles();
+            server_handler.RegisterThumbnailHandler(data);
 
             server_key.Verify(x => x.SetValue(null, data.CLSID));
         }
@@ -101,9 +101,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension(); 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.ApproveExtension();
+            server_handler.ApproveExtension(data);
 
             approved_key.Verify(x => x.SetValue(data.CLSID, data.DisplayName));
         }
@@ -118,9 +118,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension(); 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UnapproveExtension();
+            server_handler.UnapproveExtension(data);
 
             approved_key.Verify(x => x.DeleteValue(data.CLSID));
         }
@@ -139,9 +139,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UnregisterServerAssociations();
+            server_handler.UnregisterServerAssociations(data);
 
             classes_key.Verify(x => x.DeleteSubKeyTree(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")));
         }
@@ -161,9 +161,9 @@ namespace UnitTests.Installer
             reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UninstallExtension();
+            server_handler.UninstallExtension(data);
 
             classes_key.Verify(x => x.DeleteSubKeyTree(data.CLSID));
         }
@@ -182,9 +182,9 @@ namespace UnitTests.Installer
             var reg_access = new Mock<IRegistryAccess>();
             reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UninstallExtension();
+            server_handler.UninstallExtension(data);
 
             classes_key.Verify(x => x.DeleteSubKeyTree(data.CLSID), Times.Never());
         }
@@ -200,9 +200,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UnregisterServerAssociations();
+            server_handler.UnregisterServerAssociations(data);
 
             classes_key.Verify(x => x.DeleteSubKeyTree(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf"))
                 , Times.Never());
@@ -218,9 +218,9 @@ namespace UnitTests.Installer
 
             var data = new TestShellExtension();
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            server_handler.UnapproveExtension();
+            server_handler.UnapproveExtension(data);
 
             approved_key.Verify(x => x.DeleteValue(data.CLSID));
         }
@@ -230,12 +230,12 @@ namespace UnitTests.Installer
         {
             var reg_access = new Mock<IRegistryAccess>();
             var data = new TestShellExtension();
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
             var classes_key = new Mock<IRegKeyItem>();
             reg_access.Setup(x => x.OpenClassesKey()).Returns(classes_key.Object);
 
-            Assert.That(server_handler.IsInstalled(), Is.EqualTo(false));
+            Assert.That(server_handler.IsInstalled(data), Is.EqualTo(false));
 
             var version_key = new Mock<IRegKeyItem>();
 
@@ -261,7 +261,7 @@ namespace UnitTests.Installer
             version_key.Setup(x => x.GetValue("RuntimeVersion")).Returns(data.RuntimeVersion);
             version_key.Setup(x => x.GetValue("CodeBase")).Returns(data.CodeBaseValue);
 
-            Assert.That(server_handler.IsInstalled(), Is.EqualTo(true));
+            Assert.That(server_handler.IsInstalled(data), Is.EqualTo(true));
         }
 
         [Test]
@@ -274,9 +274,9 @@ namespace UnitTests.Installer
 
             reg_access.Setup(x => x.OpenClassesRoot()).Returns(classes_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            Assert.That(server_handler.IsRegistered(), Is.EqualTo(false));
+            Assert.That(server_handler.IsRegistered(data), Is.EqualTo(false));
 
             var server_key = new Mock<IRegKeyItem>();
 
@@ -285,7 +285,7 @@ namespace UnitTests.Installer
 
             server_key.Setup(x => x.GetValue(null)).Returns(data.CLSID);
 
-            Assert.That(server_handler.IsRegistered(), Is.EqualTo(true));
+            Assert.That(server_handler.IsRegistered(data), Is.EqualTo(true));
         }
 
         [Test]
@@ -296,13 +296,13 @@ namespace UnitTests.Installer
             var reg_access = new Mock<IRegistryAccess>();
             reg_access.Setup(x => x.OpenApprovedShellExtensionsKey()).Returns(approved_key.Object);
 
-            var server_handler = new ShellExtensionHandler(data, reg_access.Object);
+            var server_handler = new ShellExtensionHandler(reg_access.Object);
 
-            Assert.That(server_handler.IsApproved(), Is.EqualTo(false));
+            Assert.That(server_handler.IsApproved(data), Is.EqualTo(false));
 
             approved_key.Setup(x => x.GetValue(data.CLSID)).Returns(data.DisplayName);
 
-            Assert.That(server_handler.IsApproved(), Is.EqualTo(true));
+            Assert.That(server_handler.IsApproved(data), Is.EqualTo(true));
         }
     }
 

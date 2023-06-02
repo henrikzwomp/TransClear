@@ -13,11 +13,14 @@ namespace Installer.Windows
     {
         private ShellExtensionHandler _handler;
         private string _current_state = "Current state: Unknown";
+        private ShellExtensionData _lxf_data;
+        private ShellExtensionData _io_data;
 
         public MainWindowLogic()
         {
-            var server = ShellExtensionLoader.LoadServer<LxfShellExtension>(@"TransClear2.dll");
-            _handler = new ShellExtensionHandler(server, new RegistryAccess());
+            _lxf_data = ShellExtensionLoader.LoadServer<IoShellExtension>(@"TransClear2.dll");
+            _io_data = ShellExtensionLoader.LoadServer<LxfShellExtension>(@"TransClear2.dll");
+            _handler = new ShellExtensionHandler(new RegistryAccess());
             CheckState();
         }
 
@@ -46,9 +49,9 @@ namespace Installer.Windows
 
         private void InstallTransClear()
         {
-            _handler.InstallExtension();
-            _handler.RegisterThumbnailHandlerForLxfFiles();
-            _handler.ApproveExtension();
+            _handler.InstallExtension(_lxf_data);
+            _handler.RegisterThumbnailHandler(_lxf_data);
+            _handler.ApproveExtension(_lxf_data);
             Shell32dll.RefreshShell();
             MessageBox.Show("TransClear has been successfully installed. Click OK to exit.", "Success");
             Application.Current.Shutdown();
@@ -56,9 +59,9 @@ namespace Installer.Windows
 
         private void UninstallTransClear()
         {
-            _handler.UnapproveExtension();
-            _handler.UnregisterServerAssociations();
-            _handler.UninstallExtension();
+            _handler.UnapproveExtension(_lxf_data);
+            _handler.UnregisterServerAssociations(_lxf_data);
+            _handler.UninstallExtension(_lxf_data);
             Shell32dll.RefreshShell();
             MessageBox.Show("TransClear has been successfully uninstalled. Click OK to exit.", "Success");
             Application.Current.Shutdown();
@@ -66,9 +69,9 @@ namespace Installer.Windows
 
         private void CheckState()
         {
-            bool is_installed = _handler.IsInstalled();
-            bool is_registed = _handler.IsRegistered();
-            bool is_approved = _handler.IsApproved();
+            bool is_installed = _handler.IsInstalled(_lxf_data);
+            bool is_registed = _handler.IsRegistered(_lxf_data);
+            bool is_approved = _handler.IsApproved(_lxf_data);
 
             if (is_installed && is_registed && is_approved)
             {
