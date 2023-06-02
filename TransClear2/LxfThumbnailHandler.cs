@@ -17,10 +17,10 @@ namespace TransClear2
         {
             Bitmap image = null;
 
-            using (ZipArchive archive = new ZipArchive(_source_stream)) // SelectedItemStream stream
+            using (ZipArchive archive = new ZipArchive(_source_stream))
             {
-                ZipArchiveEntry lxfml_file = archive.GetEntry("IMAGE100.PNG");
-                var png_file_stream = lxfml_file.Open();
+                ZipArchiveEntry png_file_entry = archive.GetEntry("IMAGE100.PNG");
+                var png_file_stream = png_file_entry.Open();
 
                 image = new Bitmap(png_file_stream);
             }
