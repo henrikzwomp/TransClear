@@ -11,7 +11,7 @@ namespace Installer
         public LxfShellExtension()
         {
             DisplayName = "LxfThumbnailHandler";
-            CLSID = "{1e037f76-49a8-4d7c-b7c6-7b46d2d07ac3}";
+            CLSID = "{0C48FFE4-B4A1-44A8-972E-7F2A405EE191}"; // Unique GUIDs for class
             ClassName = "TransClear2.LxfThumbnailHandler";
             FileExtension = ".lxf";
         }
@@ -22,7 +22,7 @@ namespace Installer
         public IoShellExtension()
         {
             DisplayName = "IoThumbnailHandler";
-            CLSID = "{1e037f76-49a8-4d7c-b7c6-7b46d2d07ac3}";
+            CLSID = "{2976097A-5C30-4DA1-A92B-69A0CCD74528}"; // Unique GUIDs for class
             ClassName = "TransClear2.IoThumbnailHandler";
             FileExtension = ".io";
         }
