@@ -16,7 +16,7 @@ namespace Installer.Windows
 
         public MainWindowLogic()
         {
-            var server = ShellExtensionLoader.LoadServer<MyShellExtension>(@"LxfHandler.dll");
+            var server = ShellExtensionLoader.LoadServer<LxfShellExtension>(@"TransClear2.dll");
             _handler = new ShellExtensionHandler(server, new RegistryAccess());
             CheckState();
         }

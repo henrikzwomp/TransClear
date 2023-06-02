@@ -6,25 +6,27 @@ using System.Threading.Tasks;
 
 namespace Installer
 {
-    public class MyShellExtension : ShellExtensionData
+    public class LxfShellExtension : ShellExtensionData
     {
-        public MyShellExtension()
+        public LxfShellExtension()
         {
             DisplayName = "LxfThumbnailHandler";
             CLSID = "{1e037f76-49a8-4d7c-b7c6-7b46d2d07ac3}";
-            ClassName = "LxfHandler.LxfThumbnailHandler";
+            ClassName = "TransClear2.LxfThumbnailHandler";
+            FileExtension = ".lxf";
         }
     }
 
-    /*public class SharpShellExtension : ShellExtensionData
+    public class IoShellExtension : ShellExtensionData
     {
-        public SharpShellExtension()
+        public IoShellExtension()
         {
-            DisplayName = "LxfThumbnailHandler";
-            CLSID = new Guid("0f4e448d-a22d-35a2-804a-9e0b149b3cdd").ToString("B");
-            ClassName = "LxfThumbnailHandler.LxfThumbnailHandler";
+            DisplayName = "IoThumbnailHandler";
+            CLSID = "{1e037f76-49a8-4d7c-b7c6-7b46d2d07ac3}";
+            ClassName = "TransClear2.IoThumbnailHandler";
+            FileExtension = ".io";
         }
-    }*/
+    }
 
     public abstract class ShellExtensionData
     {
@@ -46,6 +48,8 @@ namespace Installer
         public string DisplayName { get; protected set; }
 
         public string RuntimeVersion { get; set; }
+
+        public string FileExtension { get; set; }
 
     }
 }

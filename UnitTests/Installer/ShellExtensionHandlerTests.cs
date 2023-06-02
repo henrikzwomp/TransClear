@@ -24,6 +24,7 @@ namespace UnitTests.Installer
                 AssemblyFullName = "LxfTestHandler, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null";
                 RuntimeVersion = "v4.0.30319";
                 CodeBaseValue = @"file:///X:/DevProjects/LxfTestHandler/bin/Debug/LxfTestHandler.dll";
+                FileExtension = ".lxf";
             }
         }
 

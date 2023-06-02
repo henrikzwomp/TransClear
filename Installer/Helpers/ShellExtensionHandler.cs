@@ -8,6 +8,8 @@ namespace Installer
 {
     public partial class ShellExtensionHandler
     {
+        const string CLSID_for_IThumbnailProvider_implementations = "e357fccd-a995-4576-b01f-234630154e96";
+
         private ShellExtensionData _data;
         private IRegistryAccess _reg_access;
 
@@ -58,7 +60,7 @@ namespace Installer
             using (var classes_key = _reg_access.OpenClassesRoot())
             {
                 //  Create key for Thumbnail handler on .lxf file format.
-                using (var server_key = classes_key.CreateOrOpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")))
+                using (var server_key = classes_key.CreateOrOpenSubKey(string.Format(@"{0}\shellex\{{" + CLSID_for_IThumbnailProvider_implementations + "}}", _data.FileExtension)))
                 {
                     // Register our class
                     server_key.SetValue(null, _data.CLSID);
@@ -88,7 +90,7 @@ namespace Installer
             using (var classes_key = _reg_access.OpenClassesRoot())
             {
                 //  Get the key for the association.
-                var association_key_path = string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf");
+                var association_key_path = string.Format(@"{0}\shellex\{{" + CLSID_for_IThumbnailProvider_implementations + "}}", _data.FileExtension);
 
                 using (var associationKey = classes_key.OpenSubKey(association_key_path))
                     if (associationKey == null)
@@ -171,7 +173,7 @@ namespace Installer
         {
             using (var classes_key = _reg_access.OpenClassesRoot())
             {
-                using (var server_key = classes_key.OpenSubKey(string.Format(@"{0}\shellex\{{e357fccd-a995-4576-b01f-234630154e96}}", ".lxf")))
+                using (var server_key = classes_key.OpenSubKey(string.Format(@"{0}\shellex\{{" + CLSID_for_IThumbnailProvider_implementations + "}}", _data.FileExtension)))
                 {
                     if (server_key == null)
                         return false;
