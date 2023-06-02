@@ -18,8 +18,8 @@ namespace Installer.Windows
 
         public MainWindowLogic()
         {
-            _lxf_data = ShellExtensionLoader.LoadServer<IoShellExtension>(@"TransClear2.dll");
-            _io_data = ShellExtensionLoader.LoadServer<LxfShellExtension>(@"TransClear2.dll");
+            _lxf_data = ShellExtensionLoader.LoadServer<LxfShellExtension>(@"TransClear2.dll");
+            _io_data = ShellExtensionLoader.LoadServer<IoShellExtension>(@"TransClear2.dll");
             _handler = new ShellExtensionHandler(new RegistryAccess());
             CheckState();
         }
@@ -83,9 +83,9 @@ namespace Installer.Windows
             bool lxf_is_registed = _handler.IsRegistered(_lxf_data);
             bool lxf_is_approved = _handler.IsApproved(_lxf_data);
 
-            bool io_is_installed = _handler.IsInstalled(_lxf_data);
-            bool io_is_registed = _handler.IsRegistered(_lxf_data);
-            bool io_is_approved = _handler.IsApproved(_lxf_data);
+            bool io_is_installed = _handler.IsInstalled(_io_data);
+            bool io_is_registed = _handler.IsRegistered(_io_data);
+            bool io_is_approved = _handler.IsApproved(_io_data);
 
             if (lxf_is_installed && lxf_is_registed && lxf_is_approved && io_is_installed && io_is_registed && io_is_approved)
             {
