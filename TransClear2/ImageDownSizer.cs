@@ -23,15 +23,13 @@ namespace TransClear2
         {
             if (current_width >= current_height)
             {
-                int new_width = (int)((decimal)max_size / (decimal)current_width * (decimal)current_width);
                 int new_height = (int)((decimal)max_size / (decimal)current_width * (decimal)current_height);
-                return new Size(new_width, new_height);
+                return new Size(max_size, new_height);
             }
             else
             {
                 int new_width = (int)((decimal)max_size / (decimal)current_height * (decimal)current_width);
-                int new_height = (int)((decimal)max_size / (decimal)current_height * (decimal)current_height);
-                return new Size(new_width, new_height);
+                return new Size(new_width, max_size);
             }
         }
     }
