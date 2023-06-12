@@ -136,9 +136,6 @@
   <ItemGroup>
     <Resource Include="Images\Brick64.png" />
     <Resource Include="Images\Brick.ico" />
-    <Content Include="readme.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
